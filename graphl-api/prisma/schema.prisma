@@ -1,0 +1,74 @@
+// Datasource
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Prisma Client
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Models
+model Subreddit {
+  id            Int       @id @default(autoincrement())
+  name          String
+  description   String
+  createdAt     DateTime  @default(now())
+  posts         Post[]
+  count         Int
+  bookmarkedBy  User[]    @relation("SubredditBookmarked", references: [id])  
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  name         String
+  email        String         @unique
+  password     String
+  posts        Post[]
+  favSubreddits Subreddit[]   @relation("SubredditBookmarked", references: [id])
+  comments     Comment[]
+  replies      Reply[] 
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  content     String   
+  createdAt   DateTime  @default(now())
+  url         String
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      Int?
+  upvotes     Upvote[]
+  comments    Comment[]
+  subreddit   Subreddit @relation(fields: [subredditId], references: [id])
+  subredditId Int
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  content     String
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  post        Post      @relation(fields: [postId], references: [id])
+  postId      Int
+}
+
+model Reply {
+  id          Int       @id @default(autoincrement())
+  content     String
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  comment     Comment   @relation(fields: [commentId], references: [id])
+  commentId   Int
+}
+
+model Upvote {
+  id     Int  @id @default(autoincrement())
+  post   Post @relation(fields: [postId], references: [id])
+  postId Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  @@unique([postId, userId])
+}

@@ -1,0 +1,100 @@
+### Root types ###
+type Query {
+  # Search for subreddits using filters or not
+  subreddits(filter: String, skip: Int, take: Int, orderBy: PostOrderByInput): [Subreddit!]
+  # Get single subreddit with all associated details (comments, etc)
+  subreddit(id: ID!): Subreddit
+  # Get all bookmarked subbreddit of a user
+  # bookmarkedSubreddits(id: ID!): [Subreddit!]
+}
+
+type Mutation {
+  # post(url: String!, description: String!): Post!
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+  createSubreddit(name: String!, description: String!): Subreddit!
+  # Bookmark / Unbookmark a subreddit
+  bookmarkSubreddit(subredditId: ID!): User
+  unbookmarkSubreddit(subredditId: ID!): User
+
+  # Vote FOR TEST
+  upvote(postId: ID!): Upvote
+}
+
+type Subscription {
+  newPost: Post
+  newUpvote: Upvote
+}
+
+### Models ###
+type Subreddit {
+  id: ID!
+  name: String!
+  description: String!
+  # createdAt: DateTime
+  posts: [Post!]
+  count: Int!
+  bookmarkedBy: [User!]
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  posts: [Post!]
+  favSubreddits: [Subreddit!]
+  comments: [Comment!]
+  replies: [Reply!]
+}
+
+type Post {
+  id: ID!
+  content: String!
+  # createdAt: DateTime!
+  url: String
+  user: User!
+  upvotes: [Upvote!]!
+  comments: [Comment!]!
+  subreddit: Subreddit!
+}
+
+type Comment {
+  id: ID!
+  content: String!
+  #createdAt: DateTime!
+  user: User!
+  post: Post!
+}
+
+type Reply {
+  id: ID!
+  content: String!
+  #createdAt: DateTime!
+  user: User!
+  comment: Comment!
+}
+
+type Upvote {
+  id: ID!
+  post: Post!
+  user: User!
+}
+
+type AuthPayload {
+  token: String
+  user: User
+}
+
+### Input & Enum ###
+
+# Used for sorting options
+input PostOrderByInput {
+  vote: Sort
+  url: Sort
+  createdAt: Sort
+}
+
+enum Sort {
+  asc
+  desc
+}

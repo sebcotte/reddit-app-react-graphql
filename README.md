@@ -1,4 +1,4 @@
-This project is similar to reddit app. It has been created with Next.js for frontend, and GraphQL for backend.
+This project is similar to reddit app. The backend is a GraphQL server made with Prisma and NodeJS. About the frontend, it has been created with a React framework (Next.js), it uses an Apollo Client to connect to backend and send GraphQL queries.
 
 ## Getting Started
 
