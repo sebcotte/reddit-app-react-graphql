@@ -27,10 +27,17 @@ async function subreddits(parent, args, context, info) {
 }
 
 async function subreddit(parent, args, context, info) {
-  return await context.prisma.subreddit.findOne({ where: { id: args.id }})
+  return await context.prisma.subreddit.findOne({ where: { id: Number(args.id) }})
+}
+
+async function comments(parents, args, context, info) {
+  return await context.prisma.comment.findMany(
+    { where: { post: { id: { equals: Number(args.postId)} }}}
+  )
 }
 
 module.exports = {
     subreddits,
-    subreddit
+    subreddit,
+    comments
 }

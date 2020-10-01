@@ -1,7 +1,7 @@
 // Datasource
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url = "***"
 }
 
 // Prisma Client
@@ -33,11 +33,11 @@ model User {
 
 model Post {
   id          Int       @id @default(autoincrement())
-  title       String
   content     String   
   createdAt   DateTime  @default(now())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      Int
+  url         String
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      Int?
   upvotes     Upvote[]
   comments    Comment[]
   subreddit   Subreddit @relation(fields: [subredditId], references: [id])

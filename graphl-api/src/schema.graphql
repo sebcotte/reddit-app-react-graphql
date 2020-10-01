@@ -6,6 +6,10 @@ type Query {
   subreddit(id: ID!): Subreddit
   # Get all bookmarked subbreddit of a user
   # bookmarkedSubreddits(id: ID!): [Subreddit!]
+  # Get all comments of a given post
+  comments(postId: ID!): [Comment!]
+  # Get all replies of a given comment
+  replies(commentId: ID!): [Reply!]
 }
 
 type Mutation {
@@ -14,8 +18,11 @@ type Mutation {
   login(email: String!, password: String!): AuthPayload
   createSubreddit(name: String!, description: String!): Subreddit!
   # Bookmark / Unbookmark a subreddit
-  bookmarkSubreddit(subredditId: ID!): User
-  unbookmarkSubreddit(subredditId: ID!): User
+  bookmarkSubreddit(subredditId: ID!): Subreddit
+  unbookmarkSubreddit(subredditId: ID!): Subreddit
+  handleBookmarkSubreddit(subredditId: ID!, addToBookmarks: Boolean!): Subreddit
+  # Create a post in a subreddit
+  createPost(subredditId: ID!, title: String!, content: String!): Post!
 
   # Vote FOR TEST
   upvote(postId: ID!): Upvote
@@ -49,9 +56,9 @@ type User {
 
 type Post {
   id: ID!
+  title: String!
   content: String!
   # createdAt: DateTime!
-  url: String
   user: User!
   upvotes: [Upvote!]!
   comments: [Comment!]!
@@ -64,6 +71,7 @@ type Comment {
   #createdAt: DateTime!
   user: User!
   post: Post!
+  replies: [Reply!]
 }
 
 type Reply {

@@ -87,7 +87,7 @@ async function bookmarkSubreddit(parent, args, context, info) {
         }
     })
 
-    return newBookmarkedSubreddit
+    return context.prisma.subreddit.findOne({ where: { id: Number(args.subredditId) } })
 }
 
 async function unbookmarkSubreddit(parent, args, context, info) {
@@ -118,7 +118,59 @@ async function unbookmarkSubreddit(parent, args, context, info) {
         }
     })
 
-    return bookmarkedSubreddit
+    return context.prisma.subreddit.findOne({ where: { id: Number(args.subredditId) } })
+}
+
+async function handleBookmarkSubreddit(parent, args, context, info) {
+    // Check if user that made current request is logged in
+    const userId = getUserId(context)
+
+    // Finally, save the given subreddit in bookmarks of user
+    if (Boolean(args.addToBookmarks)) {
+        context.prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                favSubreddits: {
+                    connect: {
+                        id: Number(args.subredditId)
+                    }
+                }
+            }
+        })
+    } else {
+        context.prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                favSubreddits: {
+                    disconnect: {
+                        id: Number(args.subredditId)
+                    }
+                }
+            }
+        })
+    }
+
+    return context.prisma.subreddit.findOne({ where: { id: Number(args.subredditId) } })
+}
+
+async function createPost(parent, args, context, info) {
+    // Check if user that made current request is logged in
+    const userId = getUserId(context)
+
+    const post = context.prisma.post.create({
+        data: {
+            title: args.title,
+            content: args.content,
+            user: { connect: { id: userId }},
+            subreddit: { connect: { id: Number(args.subredditId) }},
+        }
+    })
+
+    return post
 }
 
 async function upvote(parent, args, context, info) {
@@ -157,5 +209,7 @@ module.exports = {
     upvote,
     createSubreddit,
     bookmarkSubreddit,
-    unbookmarkSubreddit
+    unbookmarkSubreddit,
+    createPost,
+    handleBookmarkSubreddit,
 }

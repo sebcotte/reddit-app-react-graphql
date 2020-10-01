@@ -1,3 +1,7 @@
 # Prisma Migrate lockfile v1
 
 20200925075146-init
+20200928081010-edit-comments-model
+20200928084025-edit-post-model
+20200928091116-edit-post-model-2
+20200928092255-rm-url-in-post

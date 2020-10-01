@@ -1,7 +1,7 @@
 // Datasource
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url = "***"
 }
 
 // Prisma Client
@@ -36,6 +36,7 @@ model Post {
   title       String
   content     String   
   createdAt   DateTime  @default(now())
+  url         String
   user        User     @relation(fields: [userId], references: [id])
   userId      Int
   upvotes     Upvote[]
