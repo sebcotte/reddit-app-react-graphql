@@ -14,11 +14,13 @@ Technologies used for backend:
 First, open one terminal and start the GraphQL server:
 ```bash
 cd graphl-api
+npm install
 node src/index.js
 ```
 Then, open another terminal and start the nextjs application:
 ```bash
 cd nextjs-client
+npm install
 npm run dev
 ```
 
